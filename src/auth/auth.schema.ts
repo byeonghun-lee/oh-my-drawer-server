@@ -36,3 +36,19 @@ export class Auth extends Document {
 export const AuthSchema = SchemaFactory.createForClass(Auth);
 
 AuthSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
+
+AuthSchema.statics.findByIdentity = async function ({
+    email,
+    nickname,
+}: {
+    email: string;
+    nickname?: string;
+}): Promise<object> {
+    const query: { $or: Array<object> } = { $or: [{ email }] };
+
+    if (nickname) {
+        query.$or.push({ nickname });
+    }
+
+    return await this.findOne(query).lean();
+};
