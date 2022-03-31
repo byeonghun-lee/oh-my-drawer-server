@@ -2,8 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsDate, IsEmail, IsString } from 'class-validator';
 import { Document } from 'mongoose';
 
+export type AuthDocument = Auth & Document;
+
 @Schema()
-export class Auth extends Document {
+export class Auth {
     @Prop({
         required: true,
         unique: true,
@@ -37,18 +39,22 @@ export const AuthSchema = SchemaFactory.createForClass(Auth);
 
 AuthSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
 
-AuthSchema.statics.findByIdentity = async function ({
-    email,
-    nickname,
-}: {
-    email: string;
-    nickname?: string;
-}): Promise<object> {
-    const query: { $or: Array<object> } = { $or: [{ email }] };
+// AuthSchema.statics.findByIdentity = async function ({
+//     email,
+//     nickname,
+// }: {
+//     email: string;
+//     nickname?: string;
+// }): Promise<object> {
+//     const query: { $or: Array<object> } = { $or: [{ email }] };
 
-    if (nickname) {
-        query.$or.push({ nickname });
-    }
+//     if (nickname) {
+//         query.$or.push({ nickname });
+//     }
 
-    return await this.findOne(query).lean();
-};
+//     return await this.findOne(query).lean();
+// };
+
+
+// method 선언 방식
+// https://mongoosejs.com/docs/guide.html#es6-classes
