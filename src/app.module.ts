@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { MailAuthModule } from './mail-auth/mail-auth.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
             useUnifiedTopology: true,
         }),
         AuthModule,
+        MailAuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],
