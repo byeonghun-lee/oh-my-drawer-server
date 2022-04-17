@@ -16,10 +16,11 @@ export class MailAuth {
     @IsString()
     code: string;
 
+    @Prop()
     @IsDate()
     expireAt: Date;
 }
 
 export const MailAuthSchema = SchemaFactory.createForClass(MailAuth);
 
-MailAuthSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
+MailAuthSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 })

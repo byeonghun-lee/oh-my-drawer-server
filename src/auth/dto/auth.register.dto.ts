@@ -1,5 +1,10 @@
 import { IsEmail, IsString, MaxLength } from 'class-validator';
 
+export class verifyEmailDto {
+    @IsEmail()
+    email: string;
+}
+
 export class AuthRegisterDto {
     @IsEmail()
     email: string;
