@@ -3,10 +3,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthController } from './auth.controller';
 import { Auth, AuthSchema } from './auth.schema';
 import { AuthService } from './auth.service';
+import { MailAuthModule } from '../mail-auth/mail-auth.module';
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: Auth.name, schema: AuthSchema }]),
+        MailAuthModule,
     ],
     controllers: [AuthController],
     providers: [AuthService],

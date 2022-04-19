@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { MailAuthModule } from './mail-auth/mail-auth.module';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { MailAuthModule } from './mail-auth/mail-auth.module';
         }),
         AuthModule,
         MailAuthModule,
+        AwsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

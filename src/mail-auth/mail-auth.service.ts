@@ -9,12 +9,14 @@ import * as dayjs from 'dayjs';
 
 import { MailAuth, MailAuthDocument } from './mail-auth.schema';
 import { makeRandomId } from 'src/common/helper';
+import { AwsService } from '../aws/aws.service';
 
 @Injectable()
 export class MailAuthService {
     constructor(
         @InjectModel(MailAuth.name)
         private readonly mailAuth: Model<MailAuthDocument>,
+        private readonly awsService: AwsService,
     ) {}
 
     async create(email: string) {
@@ -43,6 +45,11 @@ export class MailAuthService {
                 },
                 { upsert: true },
             );
+            await this.awsService.sendEmail({
+                toAddress: email,
+                subject: 'ohMyDrawer 인증 코드.',
+                message: `안녕하세요. ohMyDrawer입니다. \n회원 가입을 위한 인증 코드: ${verifyCode}`,
+            });
         } catch (error) {
             console.log('error:', error);
         }
