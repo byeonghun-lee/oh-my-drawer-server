@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { MailAuthService } from '../mail-auth/mail-auth.service';
 import { AuthRegisterDto, verifyEmailDto } from './dto/auth.register.dto';
@@ -20,17 +21,36 @@ export class AuthController {
     }
 
     @Post()
-    async register(@Body() body: AuthRegisterDto) {
-        // 가입 확인
+    async register(
+        @Res({ passthrough: true }) response: Response,
+        @Body() body: AuthRegisterDto,
+    ) {
+        const { email, nickname, password, verificationCode } = body;
         await this.authService.checkExist({
-            email: body.email,
-            nickname: body.nickname,
+            email,
+            nickname,
         });
-        // 이메일 확인
-        // 유저 생성
-        // 유저 초기화
-        // 유저 응답 만들어주기 and 비밀번호는 제거
-        // 토큰만들고 cookie에 넣어주기
-        console.log('body:', body);
+
+        await this.mailAuthService.checkMailAuth({
+            email,
+            code: verificationCode,
+        });
+
+        const createdAuth = await this.authService.create({
+            email,
+            password,
+            nickname,
+        });
+        const serializedAuth = createdAuth.toJSON();
+        delete serializedAuth.hashedPassword;
+        // todo
+        // inbox, trash 생성
+        const token = this.authService.generateToken({
+            id: serializedAuth._id,
+            email: serializedAuth.email,
+            nickname: serializedAuth.nickname,
+        });
+        response.cookie('access_token', token);
+        return;
     }
 }

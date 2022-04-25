@@ -1,12 +1,16 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Auth, AuthDocument } from './auth.schema';
 import { Model } from 'mongoose';
+import { JwtService } from '@nestjs/jwt';
+
+import { Auth, AuthDocument } from './auth.schema';
+import { convertHashedText } from '../common/helper';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectModel(Auth.name) private readonly auth: Model<AuthDocument>,
+        private jwtService: JwtService,
     ) {}
 
     async checkExist({
@@ -21,12 +25,40 @@ export class AuthService {
             query.$or.push({ nickname });
         }
         const isExist = await this.auth.findOne(query).select('_id').lean();
-        console.log('isExist:', isExist);
 
         if (isExist) {
             throw new UnauthorizedException('Already exist user.');
         }
 
         return;
+    }
+
+    async create({
+        email,
+        password,
+        nickname,
+    }: {
+        email: string;
+        password: string;
+        nickname: string;
+    }) {
+        const hashedPassword = await convertHashedText(password);
+        return await this.auth.create({
+            email,
+            hashedPassword,
+            nickname,
+        });
+    }
+
+    generateToken({
+        id,
+        email,
+        nickname,
+    }: {
+        id: string;
+        email: string;
+        nickname: string;
+    }) {
+        return this.jwtService.sign({ userId: id, id: email, nickname });
     }
 }

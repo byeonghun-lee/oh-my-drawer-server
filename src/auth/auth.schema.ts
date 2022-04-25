@@ -26,7 +26,7 @@ export class Auth {
         required: true,
     })
     @IsString()
-    hasdedPassword: string;
+    hashedPassword: string;
 
     @IsDate()
     createdAt: Date;
@@ -54,7 +54,6 @@ AuthSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
 
 //     return await this.findOne(query).lean();
 // };
-
 
 // method 선언 방식
 // https://mongoosejs.com/docs/guide.html#es6-classes

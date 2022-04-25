@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+
 export const makeRandomId = (length: number): string => {
     const result = [];
     const characters =
@@ -12,4 +14,17 @@ export const makeRandomId = (length: number): string => {
     }
 
     return result.join('');
+};
+
+export const convertHashedText = async (text: string): Promise<string> => {
+    const saltOrRounds = 10;
+
+    return await bcrypt.hash(text, saltOrRounds);
+};
+
+export const compareHash = async (
+    text: string,
+    hashedText: string,
+): Promise<boolean> => {
+    return await bcrypt.compare(text, hashedText);
 };
