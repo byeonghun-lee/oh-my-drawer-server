@@ -31,6 +31,9 @@ export class Auth {
     @IsDate()
     createdAt: Date;
 
+    @Prop({
+        default: new Date(),
+    })
     @IsDate()
     expireAt: Date;
 }

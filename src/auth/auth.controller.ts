@@ -43,8 +43,9 @@ export class AuthController {
         });
         const serializedAuth = createdAuth.toJSON();
         delete serializedAuth.hashedPassword;
-        // todo
-        // inbox, trash 생성
+
+        await this.authService.jobOfInitRegister(serializedAuth);
+
         const token = this.authService.generateToken({
             id: serializedAuth._id,
             email: serializedAuth.email,

@@ -4,12 +4,14 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 
 import { Auth, AuthDocument } from './auth.schema';
+import { Box, BoxDocument } from '../box/box.schema';
 import { convertHashedText } from '../common/helper';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectModel(Auth.name) private readonly auth: Model<AuthDocument>,
+        @InjectModel(Box.name) private readonly box: Model<BoxDocument>,
         private jwtService: JwtService,
     ) {}
 
@@ -60,5 +62,18 @@ export class AuthService {
         nickname: string;
     }) {
         return this.jwtService.sign({ userId: id, id: email, nickname });
+    }
+
+    async jobOfInitRegister(auth) {
+        await this.box.insertMany([
+            {
+                name: 'inbox',
+                userId: auth._id,
+            },
+            {
+                name: 'trash',
+                userId: auth._id,
+            },
+        ]);
     }
 }

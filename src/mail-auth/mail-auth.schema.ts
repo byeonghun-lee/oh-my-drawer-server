@@ -23,4 +23,4 @@ export class MailAuth {
 
 export const MailAuthSchema = SchemaFactory.createForClass(MailAuth);
 
-MailAuthSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 })
+MailAuthSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
